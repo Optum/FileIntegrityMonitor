@@ -5,7 +5,7 @@
 # Usage       : sh ./fimon_main.sh
 # Description : File Integrity Monitoring on Unix servers
 #               This file is to be called by Cron Scheduler to run the provided shell script and json file.
-# Contact     : 
+# Contact     :
 # Keywords    : Monitor , Monitoring , Integrity, Audit
 #
 # IMPORTANT   : Users are NOT required to update or make changes to this script.
@@ -17,7 +17,8 @@
 # set -x
 
 datetime=$(date +'%Y%m%d'_%H%M)
-log_file="$(pwd)/fimon.log"
+cdir=$(dirname "$0")
+log_file="$cdir/fimon.log"
 
 >$log_file
 sh ./fimon.sh $datetime >>$log_file
