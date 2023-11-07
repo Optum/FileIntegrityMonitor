@@ -1,6 +1,6 @@
-# File Integrity Monitoring <!-- omit in toc -->
+# Windows File Integrity Monitoring <!-- omit in toc -->
 
-Compliance based File Integrity Monitoring solution for Windows and Unix Servers.
+Compliance based File Integrity Monitoring solution for Windows Servers.
 
 ## Table of Contents <!-- omit in toc -->
 
@@ -8,7 +8,7 @@ Compliance based File Integrity Monitoring solution for Windows and Unix Servers
 - [Solution Details](#solution-details)
     - [Results Package](#results-package)
     - [Audit Outcome Values](#audit-outcome-values)
-- [Sample `fimon_config.json` file](#sample-fimon_configjson-file)
+- [Sample fimon\_config.json file](#sample-fimon_configjson-file)
     - [JSON attribute reference guide](#json-attribute-reference-guide)
 - [Steps to create a File Integrity Monitor](#steps-to-create-a-file-integrity-monitor)
     - [Testing the Monitor](#testing-the-monitor)
@@ -16,7 +16,7 @@ Compliance based File Integrity Monitoring solution for Windows and Unix Servers
 
 ## Summary
 
-This repo contains an overview along with steps to setup File Integrity Monitoring on Windows and Unix servers. The script performs compliance auditing for application files and detects if files have been added, removed, or changed. Integrity Monitoring is done from a remote server that application developers/ops engineers do not have access to. This is so that the monitor cannot be disabled by those who also might be able to alter application files. This script is setup to use services such as Interlink, ServiceNow, Grafana, Windows Task Scheduler, and Cron but can be replaced by any other tools or scheduling systems preferred by the customer.
+This document provides an overview along with steps to setup File Integrity Monitoring on Windows servers. The script performs compliance auditing for application files and detects if files have been added, removed, or changed. Integrity Monitoring is done from a remote server that application developers/ops engineers do not have access to. This is so that the monitor cannot be disabled by those who also might be able to alter application files. This script is setup to use services such as Interlink, ServiceNow, Grafana, and Windows Task Scheduler but can be replaced by any other tools or scheduling systems preferred by the customer.
 
 Users are only required to update the JSON config file with the attributes mentioned below.
 
@@ -24,10 +24,10 @@ Users are only required to update the JSON config file with the attributes menti
 
 The File Integrity Monitoring package consists of following files:
 
-- **`fimon.ps1 / fimon.sh`** - Script with state based embedded webhooks to Interlink along with ServiceNow Notify and Auto-Ticketing. It also generates an alert (normal or warning) and specifies the folder containing the results in the message text. *(The results cannot be attached to the alert or included in the message text due to limitations)*. This script has the ability to run in Active/Active mode from various servers and still only produce 1 alert notification.
-- **`fimon_config.json`** - JSON file based on an opt-in model to monitor only the key File Shares in scope for integrity monitoring. Users also have the option to exclude certain filetypes from the audit as needed.
-- **`fimon_main.bat / fimon_main.sh`** - The main script that calls the `fimon.ps1 / fimon.sh` script with command line arguments. The scheduler runs this file daily at a set time. *(The script can't be run directly from Task Scheduler or Cron as there are limitations with passing command line arguments.)*
-- **`fimon_scheduler.xml`** - Windows Task Scheduler schema file that makes the script run daily at a set time.
+- **[fimon.ps1](fimon.ps1)** - Script with state based embedded webhooks to Interlink along with ServiceNow Notify and Auto-Ticketing. It also generates an alert (normal or warning) and specifies the folder containing the results in the message text. *(The results cannot be attached to the alert or included in the message text due to limitations)*. This script has the ability to run in Active/Active mode from various servers and still only produce 1 alert notification.
+- **[fimon_config.json](fmon_config.json)** - JSON file based on an opt-in model to monitor only the key File Shares in scope for integrity monitoring. Users also have the option to exclude certain filetypes from the audit as needed.
+- **[fimon_main.bat](fimon_main.bat)** - The main script that calls the [fimon.ps1](fimon.ps1) script with command line arguments. Windows Task Scheduler runs this file daily at a set time. *(The script can't be run directly from Task Scheduler as there are limitations with passing command line arguments.)*
+- **[fimon_scheduler.xml](fimon_scheduler.xml)** - Windows Task Scheduler schema file that makes the script run daily at a set time.
 
 ### Results Package
 
@@ -45,7 +45,7 @@ The File Integrity Monitoring package consists of following files:
 - `MISSING`: This result indicates that flies are missing when compared against the Baseline File created during the previous audit.
 - `NEW`: This indicates that there were new files added to the File Share locations in scope for auditing.
 
-## Sample `fimon_config.json` file
+## Sample [fimon_config.json](fmon_config.json) file
 
 ```json
 {
@@ -70,9 +70,9 @@ The File Integrity Monitoring package consists of following files:
     "continuous_change": "false",
     "results": "RESULTS_FOLDER_PATH",
     "targets": [
-        "FILE_SHARE1",
-        "FILE_SHARE2",
-        "FILE_SHARE3"
+        "\\FILE_SHARE1",
+        "\\FILE_SHARE2",
+        "\\FILE_SHARE3"
     ],
     "exclude": [
         "*.FILE_TYPE",
@@ -97,24 +97,19 @@ The File Integrity Monitoring package consists of following files:
 
 ## Steps to create a File Integrity Monitor
 
-- Obtain a dedicated auditing Windows or Unix server to run the File Integrity solution on. Validate that your credentials have access to all the File Shares defined in `fimon_config.json`.
-- Having sudo access will simplify the on-boarding process and help manage cron schedules for Unix.
+- Obtain a dedicated auditing Windows server to run the File Integrity solution on. Validate that your credentials have access to all the File Shares defined in [fimon_config.json](fmon_config.json).
 - Clone this repo via Git commands or by downloading the zip folder and save it to your working directory.
-- Navigate to the `fimon` folder and update the `fimon_config.json` file with the configurations for monitoring using the [JSON attribute reference guide](#json-attribute-reference-guide).
+- Navigate to the `fimon` folder and update the [fimon_config.json](fmon_config.json) file with the configurations for monitoring using the [JSON attribute reference guide](#json-attribute-reference-guide).
 
 ### Testing the Monitor
 
-- Manipulate the values in the `fimon_config.json` file as desired for testing.
+- Manipulate the values in the [fimon_config.json](fmon_config.json) file as desired for testing.
 - Open a Powershell IDE as the user with the credentials validated above for Windows.
-- Open a terminal window in the `fimon` directory and run the `fimon_main` file.
+- Open a terminal window in the `.\fimon` directory and run `.\fimon_main.bat`.
 
 ### Running the Monitor
 
-- **Windows:**
-    - Create a monitoring task using Windows Task Scheduler with the credentials validated above. *Note: Make sure to manually update Task Scheduler if the credentials change.*
-    - Import the [fimon_scheduler.xml](./windows/fimon_scheduler.xml) file to Windows Task Scheduler and update the values according to your monitoring needs.
-- **Unix:**
-    - Schedule a cron job according to your monitoring needs: `sudo crontab -e`
-    - To run the script every 5 minutes, use following format: `*/5 * * * * ./fimon_main.sh > ./cron.out 2> ./cron.err`
+- Create a monitoring task using Windows Task Scheduler with the credentials validated above. *Note: Make sure to manually update Task Scheduler if the credentials change.*
+- Import the [fimon_scheduler.xml](fimon_scheduler.xml) file to Windows Task Scheduler and update the values according to your monitoring needs.
 
 The syntax is the default dir/location where the package should be downloaded. Update dir/location if you have downloaded the package elsewhere.

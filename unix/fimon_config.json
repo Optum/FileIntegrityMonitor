@@ -1,0 +1,32 @@
+{
+    "application": "FORMAL_APP_NAME",
+    "severity": "warning",
+    "autoincident": "false",
+    "workgroup": "CHANGE_MGMT_SUPPORT_WORKGROUP",
+    "core_api_token_key": "CORE_API_TOKEN_KEY",
+    "core_api_token_value": "CORE_API_TOKEN_VALUE",
+    "core_endpoint": "CORE_API_ENDPOINT",
+    "is_dmz": "false",
+    "dmz_endpoint": "EXT_API_ENDPOINT",
+    "is_external": "false",
+    "ext_endpoint": "EXT_API_ENDPOINT",
+    "ext_api_token_key": "EXT_API_TOKEN_KEY",
+    "ext_api_token_value": "EXT_API_TOKEN_VALUE",
+    "ext_oauth_token": "EXT_OAUTH_TOKEN",
+    "event_query": "GET_QUERY_TO_CHECK_IF_API_CALL_SUCCEEDED",
+    "event_oauth_token": "EVENT_MGMT_TOOL_OAUTH_TOKEN",
+    "telemetry_token": "TELEMETRY_INGRESSION_TOKEN",
+    "telemetry_endpoint": "TELEMETRY_INGRESSION_API_ENDPOINT",
+    "continuous_change": "false",
+    "results": "RESULTS_FOLDER_PATH",
+    "targets": [
+        "/FILE_SHARE1",
+        "/FILE_SHARE2",
+        "/FILE_SHARE3"
+    ],
+    "exclude": [
+        "*.FILE_TYPE",
+        "*.FILE_TYPE",
+        "*.FILE_TYPE*"
+    ]
+}
