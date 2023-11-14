@@ -18,6 +18,7 @@ _Put an `x` in the boxes that apply_
 - [ ] Describe the feature being requested
 - [ ] Describe a preferred solution
 - [ ] Provide examples or related code if applicable
+- [ ] Documentation only
 
 **If the feature request is approved, would you be willing to submit a PR?**
 _(Help can be provided if you need assistance submitting a PR)_
